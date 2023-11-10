@@ -23,7 +23,13 @@ class FaceFusionScript(scripts.Script):
 			with gr.Column():
 				img = gr.inputs.Image(type="pil")
 				enable = gr.Checkbox(False, placeholder="enable", label="Enable")
-				image_quality = gr.Slider(100, 100, 1, step=1, label="Image quality")
+				image_quality = gr.Slider(
+					label="Image quality",
+					value=80,
+					step=1,
+					minimum=0,
+					maximum=100
+				)
 		return [
 			img,
 			enable,
