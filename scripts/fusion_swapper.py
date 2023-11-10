@@ -7,7 +7,7 @@ from typing import Union, Dict
 import facefusion.globals
 from facefusion.core import conditional_process, limit_resources, pre_check
 from facefusion.processors.frame import globals as frame_processors_globals
-from facefusion.processors.frame.modules import face_enhancer, face_swapper, frame_enhancer
+from facefusion.processors.frame.modules import face_enhancer, face_swapper
 from facefusion.utilities import decode_execution_providers
 from facefusion.utilities import normalize_output_path
 
@@ -90,7 +90,6 @@ def swap_face(
 	if (
 		not face_enhancer.pre_check()
 		or not face_swapper.pre_check()
-		or not frame_enhancer.pre_check()
 	):
 		return ImageResult()
 	conditional_process()
