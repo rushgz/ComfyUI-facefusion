@@ -23,29 +23,19 @@ class FaceFusionScript(scripts.Script):
 			with gr.Column():
 				img = gr.inputs.Image(type="pil")
 				enable = gr.Checkbox(False, placeholder="enable", label="Enable")
-				image_quality = gr.Slider(
-					label="Image quality",
-					value=80,
-					step=1,
-					minimum=0,
-					maximum=100
-				)
 		return [
 			img,
-			enable,
-			image_quality
+			enable
 		]
 
 	def process(
 		self,
 		p: StableDiffusionProcessing,
 		img,
-		enable,
-		image_quality
+		enable
 	):
 		self.source = img
 		self.enable = enable
-		self.image_quality = image_quality
 		if self.enable:
 			if self.source is not None:
 				# if isinstance(p, StableDiffusionProcessingImg2Img) and swap_in_source:
@@ -76,7 +66,6 @@ class FaceFusionScript(scripts.Script):
 				result: ImageResult = swap_face(
 					self.source,
 					image,
-					image_quality=self.image_quality,
 				)
 				pp = scripts_postprocessing.PostprocessedImage(result.image())
 				pp.info = {}

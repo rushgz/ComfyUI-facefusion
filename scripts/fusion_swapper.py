@@ -22,12 +22,14 @@ class ImageResult:
 		return None
 
 
-def apply_args(source_path, target_path, output_path, image_quality) -> None:
+def apply_args(source_path, target_path, output_path, image_quality=100) -> None:
 	# general
 	facefusion.globals.source_path = source_path
 	facefusion.globals.target_path = target_path
-	facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_path,
-														   facefusion.globals.target_path, output_path)
+	facefusion.globals.output_path = normalize_output_path(
+		facefusion.globals.source_path,
+		facefusion.globals.target_path,
+		output_path)
 	# misc
 	facefusion.globals.skip_download = False
 	facefusion.globals.headless = True
@@ -35,7 +37,7 @@ def apply_args(source_path, target_path, output_path, image_quality) -> None:
 	facefusion.globals.execution_providers = decode_execution_providers(['cuda', 'cpu'])
 	facefusion.globals.execution_thread_count = 1
 	facefusion.globals.execution_queue_count = 1
-	facefusion.globals.max_memory = 0
+	facefusion.globals.max_memory = None
 	# face recognition
 	facefusion.globals.face_recognition = "reference"
 	facefusion.globals.face_analyser_direction = "large-small"
@@ -66,7 +68,6 @@ def apply_args(source_path, target_path, output_path, image_quality) -> None:
 def swap_face(
 	source_img: Image.Image,
 	target_img: Image.Image,
-	image_quality: int = 80,
 ) -> ImageResult:
 	if isinstance(source_img, str):  # source_img is a base64 string
 		import base64, io
@@ -82,7 +83,7 @@ def swap_face(
 	target_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 	target_img.save(target_path)
 	output_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
-	apply_args(source_path, target_path, output_path, image_quality)
+	apply_args(source_path, target_path, output_path)
 	limit_resources()
 	if not pre_check():
 		return ImageResult()
