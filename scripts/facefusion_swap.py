@@ -25,14 +25,14 @@ class FaceFusionScript(scripts.Script):
 				enable = gr.Checkbox(False, placeholder="enable", label="Enable")
 		return [
 			img,
-			enable
+			enable,
 		]
 
 	def process(
 		self,
 		p: StableDiffusionProcessing,
 		img,
-		enable
+		enable,
 	):
 		self.source = img
 		self.enable = enable
