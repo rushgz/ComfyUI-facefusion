@@ -1,7 +1,4 @@
 insightface>=0.7.3
 onnx>=1.14.1
-opencv-python>=4.8.1.78
 opennsfw2>=0.10.2
-protobuf>=3.20.3
 tensorflow>=2.13.0
-tqdm>=4.66.1
