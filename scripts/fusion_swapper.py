@@ -26,10 +26,8 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	# general
 	facefusion.globals.source_path = source_path
 	facefusion.globals.target_path = target_path
-	facefusion.globals.output_path = normalize_output_path(
-		facefusion.globals.source_path,
-		facefusion.globals.target_path,
-		output_path)
+	facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_path,
+														   facefusion.globals.target_path, output_path)
 	# misc
 	facefusion.globals.skip_download = False
 	facefusion.globals.headless = True
@@ -38,26 +36,33 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	facefusion.globals.execution_thread_count = 1
 	facefusion.globals.execution_queue_count = 1
 	facefusion.globals.max_memory = None
-	# face recognition
-	facefusion.globals.face_recognition = "reference"
-	facefusion.globals.face_analyser_direction = "large-small"
+	# face analyser
+	facefusion.globals.face_analyser_order = 'large-small'
 	facefusion.globals.face_analyser_age = None
 	facefusion.globals.face_analyser_gender = None
+	facefusion.globals.face_detector_model = 'retinaface'
+	facefusion.globals.face_detector_size = '640x640'
+	facefusion.globals.face_detector_score = 0.65
+	# face selector
+	facefusion.globals.face_selector_mode = 'one'
 	facefusion.globals.reference_face_position = 0
-	facefusion.globals.reference_face_distance = 1.5
-	facefusion.globals.reference_frame_number = None
+	facefusion.globals.reference_face_distance = 0.6
+	facefusion.globals.reference_frame_number = 0
+	# face mask
+	facefusion.globals.face_mask_blur = 0.3
+	facefusion.globals.face_mask_padding = [ 0, 0, 0, 0 ]
 	# frame extraction
-	facefusion.globals.trim_frame_start = None
-	facefusion.globals.trim_frame_end = None
-	facefusion.globals.temp_frame_format = "png"
+	facefusion.globals.trim_frame_start = 0
+	facefusion.globals.trim_frame_end = 0
+	facefusion.globals.temp_frame_format = 'jpg'
 	facefusion.globals.temp_frame_quality = image_quality
 	facefusion.globals.keep_temp = False
 	# output creation
 	facefusion.globals.output_image_quality = image_quality
-	facefusion.globals.output_video_encoder = None
+	facefusion.globals.output_video_encoder = 'libx264'
 	facefusion.globals.output_video_quality = image_quality
 	facefusion.globals.keep_fps = False
-	facefusion.globals.skip_audio = False
+	facefusion.globals.skip_audio = True
 	# frame processors
 	facefusion.globals.frame_processors = ['face_swapper', 'face_enhancer']
 	frame_processors_globals.face_swapper_model = "inswapper_128"
