@@ -16,13 +16,13 @@ This repo makes it an extension of [AUTOMATIC1111 Webui](https://github.com/AUTO
 
 ## Diffus Webui
 
-[Diffus Webui](https://webui.graviti.com/?&__theme=dark&utm_campaign=facefusion&utm_source=github) is a hosted Stable Diffusion WebUI base on
+[Diffus Webui](https://www.diffus.graviti.com/?utm_source=github&utm_campaign=facefusion ) is a hosted Stable Diffusion WebUI base on
 [AUTOMATIC1111 Webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui/). You can also use
 FaceFusion extension on it.
 
 ![Preview](.github/preview-diffus.jpg)
 
-You can also join our [Discord](https://discord.gg/darTYpt2Yh) community and let us know what you
+You can also join our [Discord](https://discord.gg/CDhw9n9yfQ) community and let us know what you
 want us to build and release next.
 
 ## Disclaimer
