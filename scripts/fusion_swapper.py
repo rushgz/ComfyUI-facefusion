@@ -6,8 +6,11 @@ from typing import Union, Dict
 
 import facefusion.globals
 from facefusion.core import conditional_process, limit_resources, pre_check
+from facefusion import content_analyser
+from facefusion import face_analyser
 from facefusion.processors.frame import globals as frame_processors_globals
 from facefusion.processors.frame.modules import face_enhancer, face_swapper
+from facefusion.processors.frame.core import get_frame_processors_modules
 from facefusion.utilities import decode_execution_providers
 from facefusion.utilities import normalize_output_path
 
@@ -50,7 +53,7 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	facefusion.globals.reference_frame_number = 0
 	# face mask
 	facefusion.globals.face_mask_blur = 0.3
-	facefusion.globals.face_mask_padding = [ 0, 0, 0, 0 ]
+	facefusion.globals.face_mask_padding = (0, 0, 0, 0)
 	# frame extraction
 	facefusion.globals.trim_frame_start = 0
 	facefusion.globals.trim_frame_end = 0
@@ -91,8 +94,11 @@ def swap_face(
 	output_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 	apply_args(source_path, target_path, output_path)
 	limit_resources()
-	if not pre_check():
+	if not pre_check() or not content_analyser.pre_check() or not face_analyser.pre_check():
 		return ImageResult()
+	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
+		if not frame_processor_module.pre_check():
+			return ImageResult()
 	if (
 		not face_enhancer.pre_check()
 		or not face_swapper.pre_check()
