@@ -66,6 +66,7 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	# frame processors
 	facefusion.globals.frame_processors = ['face_swapper', 'face_enhancer']
 	frame_processors_globals.face_swapper_model = "inswapper_128"
+	facefusion.globals.face_recognizer_model = 'arcface_inswapper'
 	frame_processors_globals.face_enhancer_model = 'gfpgan_1.4'
 	frame_processors_globals.face_enhancer_blend = 100
 
