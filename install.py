@@ -30,8 +30,6 @@ import torch.cuda as cuda
 if cuda.is_available():
 	set_device('cuda')
 	logger.info("cuda available")
-	pip_uninstall("torch")
-	launch.run_pip('install -U "torch"')
 	pip_uninstall("onnxruntime", "onnxruntime-gpu")
 	launch.run_pip('install -U "onnxruntime-gpu>=1.16.3"')
 else:
