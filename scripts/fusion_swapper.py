@@ -32,7 +32,7 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	# misc
 	facefusion.globals.skip_download = False
 	# execution
-	facefusion.globals.execution_providers = decode_execution_providers(['cuda'])
+	facefusion.globals.execution_providers = decode_execution_providers(['cuda', 'cpu'])
 	facefusion.globals.execution_thread_count = 1
 	facefusion.globals.execution_queue_count = 1
 	facefusion.globals.max_memory = None
@@ -42,7 +42,7 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	facefusion.globals.face_analyser_gender = None
 	facefusion.globals.face_detector_model = 'retinaface'
 	facefusion.globals.face_detector_size = '640x640'
-	facefusion.globals.face_detector_score = 0.7
+	facefusion.globals.face_detector_score = 0.75
 	# face selector
 	facefusion.globals.face_selector_mode = 'one'
 	facefusion.globals.reference_face_position = 0
