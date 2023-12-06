@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
+import subprocess
+import sys
 
 import launch
 import pkg_resources
@@ -20,15 +22,20 @@ def _get_installed_version(package: str) -> str | None:
     except Exception:
         return None
 
+def pip_uninstall(*args):
+    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", *args])
+
 
 import torch.cuda as cuda
 if cuda.is_available():
 	set_device('cuda')
 	logger.info("cuda available")
+	pip_uninstall("onnxruntime", "onnxruntime-gpu")
 	launch.run_pip('install -U "onnxruntime-gpu>=1.16.3"')
 else:
 	set_device('cpu')
 	logger.info("use cpu")
+	pip_uninstall("onnxruntime", "onnxruntime-gpu")
 	launch.run_pip('install -U "onnxruntime>=1.16.3"')
 
 
