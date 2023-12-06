@@ -34,7 +34,9 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	# misc
 	facefusion.globals.skip_download = False
 	# execution
-	facefusion.globals.execution_providers = decode_execution_providers([get_device()])
+	device = get_device()
+	logger.info(f"device: {device}")
+	facefusion.globals.execution_providers = decode_execution_providers([device])
 	logger.info(f"device use {facefusion.globals.execution_providers}")
 	facefusion.globals.execution_thread_count = 1
 	facefusion.globals.execution_queue_count = 1

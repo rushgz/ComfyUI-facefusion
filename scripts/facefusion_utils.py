@@ -31,4 +31,4 @@ def get_device():
 		last_device = "cpu"
 	gl.device_type = last_device
 	gl.is_first_run = False
-	return gl.device_type
+	return last_device
