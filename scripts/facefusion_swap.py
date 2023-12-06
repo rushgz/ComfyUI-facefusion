@@ -37,22 +37,7 @@ class FaceFusionScript(scripts.Script):
 		self.source = img
 		self.enable = enable
 		if self.enable:
-			if self.source is not None:
-				# if isinstance(p, StableDiffusionProcessingImg2Img) and swap_in_source:
-				# 	logger.info(f"roop enabled, face index %s", self.faces_index)
-				#
-				# 	for i in range(len(p.init_images)):
-				# 		logger.info(f"Swap in source %s", i)
-				# 		result = swap_face(
-				# 			self.source,
-				# 			p.init_images[i],
-				# 			faces_index=self.faces_index,
-				# 			model=self.model,
-				# 			upscale_options=self.upscale_options,
-				# 		)
-				# 		p.init_images[i] = result.image()
-				pass
-			else:
+			if self.source is None:
 				logger.error(f"Please provide a source face")
 
 	def postprocess_batch(self, *args, **kwargs):
@@ -62,6 +47,7 @@ class FaceFusionScript(scripts.Script):
 	def postprocess_image(self, p, script_pp: scripts.PostprocessImageArgs, *args):
 		if self.enable:
 			if self.source is not None:
+				logger.info("FaceFusion enabled, start process")
 				image: Image.Image = script_pp.image
 				result: ImageResult = swap_face(
 					self.source,
@@ -71,3 +57,4 @@ class FaceFusionScript(scripts.Script):
 				pp.info = {}
 				p.extra_generation_params.update(pp.info)
 				script_pp.image = pp.image
+				logger.info("FaceFusion process done")

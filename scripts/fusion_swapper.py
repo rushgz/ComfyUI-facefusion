@@ -2,14 +2,12 @@
 import tempfile
 from PIL import Image
 from dataclasses import dataclass
-from typing import Union, Dict
+from typing import Union
 
 import facefusion.globals
 from facefusion.core import conditional_process, limit_resources, pre_check
-from facefusion import content_analyser
 from facefusion import face_analyser
 from facefusion.processors.frame import globals as frame_processors_globals
-from facefusion.processors.frame.modules import face_enhancer, face_swapper
 from facefusion.processors.frame.core import get_frame_processors_modules
 from facefusion.utilities import decode_execution_providers
 from facefusion.utilities import normalize_output_path
@@ -33,7 +31,6 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 														   facefusion.globals.target_path, output_path)
 	# misc
 	facefusion.globals.skip_download = False
-	facefusion.globals.headless = True
 	# execution
 	facefusion.globals.execution_providers = decode_execution_providers(['cuda', 'cpu'])
 	facefusion.globals.execution_thread_count = 1
@@ -54,18 +51,8 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	# face mask
 	facefusion.globals.face_mask_blur = 0.3
 	facefusion.globals.face_mask_padding = (0, 0, 0, 0)
-	# frame extraction
-	facefusion.globals.trim_frame_start = 0
-	facefusion.globals.trim_frame_end = 0
-	facefusion.globals.temp_frame_format = 'jpg'
-	facefusion.globals.temp_frame_quality = image_quality
-	facefusion.globals.keep_temp = False
 	# output creation
 	facefusion.globals.output_image_quality = image_quality
-	facefusion.globals.output_video_encoder = 'libx264'
-	facefusion.globals.output_video_quality = image_quality
-	facefusion.globals.keep_fps = False
-	facefusion.globals.skip_audio = True
 	# frame processors
 	facefusion.globals.frame_processors = ['face_swapper', 'face_enhancer']
 	frame_processors_globals.face_swapper_model = "inswapper_128"
@@ -92,17 +79,14 @@ def swap_face(
 	target_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 	target_img.save(target_path)
 	output_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
+
+	# call FaceFusion
 	apply_args(source_path, target_path, output_path)
 	limit_resources()
-	if not pre_check() or not content_analyser.pre_check() or not face_analyser.pre_check():
+	if not pre_check() or not face_analyser.pre_check():
 		return ImageResult()
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
 		if not frame_processor_module.pre_check():
 			return ImageResult()
-	if (
-		not face_enhancer.pre_check()
-		or not face_swapper.pre_check()
-	):
-		return ImageResult()
 	conditional_process()
 	return ImageResult(path=facefusion.globals.output_path)

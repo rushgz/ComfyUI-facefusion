@@ -7,12 +7,10 @@ import onnxruntime
 from onnx import numpy_helper
 
 import facefusion.globals
-import facefusion.processors.frame.core as frame_processors
 from facefusion import wording
 from facefusion.face_analyser import get_one_face, get_many_faces, find_similar_faces, clear_face_analyser
 from facefusion.face_helper import warp_face, paste_back
 from facefusion.face_reference import get_face_reference
-from facefusion.content_analyser import clear_content_analyser
 from facefusion.typing import Face, Frame, Update_Process, ProcessMode, ModelValue, OptionsWithModel, Embedding
 from facefusion.utilities import conditional_download, resolve_relative_path, is_image, is_video, is_file, is_download_done, update_status
 from facefusion.vision import read_image, read_static_image, write_image
@@ -180,7 +178,6 @@ def post_process() -> None:
 	clear_frame_processor()
 	clear_model_matrix()
 	clear_face_analyser()
-	clear_content_analyser()
 	read_static_image.cache_clear()
 
 
@@ -277,7 +274,3 @@ def process_image(source_path : str, target_path : str, output_path : str) -> No
 	reference_face = get_one_face(target_frame, facefusion.globals.reference_face_position) if 'reference' in facefusion.globals.face_selector_mode else None
 	result_frame = process_frame(source_face, reference_face, target_frame)
 	write_image(output_path, result_frame)
-
-
-def process_video(source_path : str, temp_frame_paths : List[str]) -> None:
-	frame_processors.multi_process_frames(source_path, temp_frame_paths, process_frames)

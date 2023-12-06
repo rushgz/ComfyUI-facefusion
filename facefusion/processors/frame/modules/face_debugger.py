@@ -4,11 +4,9 @@ import cv2
 import numpy
 
 import facefusion.globals
-import facefusion.processors.frame.core as frame_processors
 from facefusion import wording
 from facefusion.face_analyser import get_one_face, get_many_faces, find_similar_faces, clear_face_analyser
 from facefusion.face_reference import get_face_reference
-from facefusion.content_analyser import clear_content_analyser
 from facefusion.typing import Face, Frame, Update_Process, ProcessMode
 from facefusion.vision import read_image, read_static_image, write_image
 from facefusion.face_helper import warp_face, create_static_mask_frame
@@ -53,7 +51,6 @@ def pre_process(mode : ProcessMode) -> bool:
 def post_process() -> None:
 	clear_frame_processor()
 	clear_face_analyser()
-	clear_content_analyser()
 
 
 def debug_face(source_face : Face, target_face : Face, temp_frame : Frame) -> Frame:
@@ -117,7 +114,3 @@ def process_image(source_path : str, target_path : str, output_path : str) -> No
 	reference_face = get_one_face(target_frame, facefusion.globals.reference_face_position) if 'reference' in facefusion.globals.face_selector_mode else None
 	result_frame = process_frame(source_face, reference_face, target_frame)
 	write_image(output_path, result_frame)
-
-
-def process_video(source_path : str, temp_frame_paths : List[str]) -> None:
-	frame_processors.multi_process_frames(source_path, temp_frame_paths, process_frames)

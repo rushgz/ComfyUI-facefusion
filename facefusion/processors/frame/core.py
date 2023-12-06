@@ -25,7 +25,6 @@ FRAME_PROCESSORS_METHODS =\
 	'process_frame',
 	'process_frames',
 	'process_image',
-	'process_video',
 	'post_process'
 ]
 
