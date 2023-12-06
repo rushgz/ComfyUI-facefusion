@@ -30,11 +30,15 @@ import torch.cuda as cuda
 if cuda.is_available():
 	set_device('cuda')
 	logger.info("cuda available")
+	pip_uninstall("torch")
+	launch.run_pip('install -U "torch==2.1.0" --extra-index-url "https://download.pytorch.org/whl/cu118"')
 	pip_uninstall("onnxruntime", "onnxruntime-gpu")
 	launch.run_pip('install -U "onnxruntime-gpu>=1.16.3"')
 else:
 	set_device('cpu')
 	logger.info("use cpu")
+	pip_uninstall("torch")
+	launch.run_pip('install -U "torch==2.1.0"')
 	pip_uninstall("onnxruntime", "onnxruntime-gpu")
 	launch.run_pip('install -U "onnxruntime>=1.16.3"')
 
