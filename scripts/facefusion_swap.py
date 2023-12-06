@@ -9,6 +9,7 @@ from modules.processing import (
 
 from scripts.facefusion_logging import logger
 from scripts.fusion_swapper import swap_face, ImageResult
+from scripts.facefusion_utils import get_timestamp
 
 
 class FaceFusionScript(scripts.Script):
@@ -47,6 +48,7 @@ class FaceFusionScript(scripts.Script):
 	def postprocess_image(self, p, script_pp: scripts.PostprocessImageArgs, *args):
 		if self.enable:
 			if self.source is not None:
+				st = get_timestamp()
 				logger.info("FaceFusion enabled, start process")
 				image: Image.Image = script_pp.image
 				result: ImageResult = swap_face(
@@ -57,4 +59,6 @@ class FaceFusionScript(scripts.Script):
 				pp.info = {}
 				p.extra_generation_params.update(pp.info)
 				script_pp.image = pp.image
-				logger.info("FaceFusion process done")
+				et = get_timestamp()
+				cost_time = (et - st) / 1000
+				logger.info(f"FaceFusion process done, time taken: {cost_time} sec.")
