@@ -31,14 +31,12 @@ if cuda.is_available():
 	set_device('cuda')
 	logger.info("cuda available")
 	pip_uninstall("torch")
-	subprocess.call([ 'pip', 'install', '-r', 'requirements.txt', '--extra-index-url', 'https://download.pytorch.org/whl/cu118'])
+	launch.run_pip('install -U "torch=2.1.0"')
 	pip_uninstall("onnxruntime", "onnxruntime-gpu")
 	launch.run_pip('install -U "onnxruntime-gpu>=1.16.3"')
 else:
 	set_device('cpu')
 	logger.info("use cpu")
-	pip_uninstall("torch")
-	subprocess.call([ 'pip', 'install', '-r', 'requirements.txt' ])
 	pip_uninstall("onnxruntime", "onnxruntime-gpu")
 	launch.run_pip('install -U "onnxruntime>=1.16.3"')
 
