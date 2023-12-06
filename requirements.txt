@@ -2,7 +2,6 @@ basicsr==1.4.2
 filetype==1.2.0
 numpy==1.26.1
 onnx==1.15.0
-onnxruntime==1.16.0
 opencv-python==4.8.1.78
 realesrgan==0.3.0
 tqdm==4.66.1

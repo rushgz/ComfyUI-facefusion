@@ -3,8 +3,6 @@
 from pathlib import Path
 
 import launch
-import subprocess
-import sys
 import pkg_resources
 from scripts.facefusion_logging import logger
 from scripts.facefusion_utils import set_device
@@ -22,23 +20,16 @@ def _get_installed_version(package: str) -> str | None:
     except Exception:
         return None
 
-def pip_uninstall(*args):
-    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", *args])
-
 
 import torch.cuda as cuda
 if cuda.is_available():
 	set_device('cuda')
 	logger.info("cuda available")
-	pip_uninstall("onnxruntime")
-	if not launch.is_installed("onnxruntime-gpu"):
-		launch.run_pip('install "onnxruntime-gpu>=1.16.0"')
+	launch.run_pip('install -U "onnxruntime-gpu>=1.16.3"')
 else:
 	set_device('cpu')
 	logger.info("use cpu")
-	pip_uninstall("onnxruntime-gpu")
-	if not launch.is_installed("onnxruntime"):
-		launch.run_pip('install "onnxruntime>=1.16.0"')
+	launch.run_pip('install -U "onnxruntime>=1.16.3"')
 
 
 with _REQUIREMENT_PATH.open() as fp:
