@@ -5,7 +5,7 @@ from pathlib import Path
 import launch
 import pkg_resources
 from scripts.facefusion_logging import logger
-import scripts.facefusion_globals as gl
+from scripts.facefusion_utils import set_device
 
 _REQUIREMENT_PATH = Path(__file__).absolute().parent / "requirements.txt"
 
@@ -23,12 +23,12 @@ def _get_installed_version(package: str) -> str | None:
 
 import torch.cuda as cuda
 if cuda.is_available():
-	gl.CUDA_AVAILABLE = True
+	set_device('cuda')
 	logger.info("cuda available")
 	if not launch.is_installed("onnxruntime-gpu"):
 		launch.run_pip('install "onnxruntime-gpu>=1.16.0"')
 else:
-	gl.CUDA_AVAILABLE = False
+	set_device('cpu')
 	logger.info("use cpu")
 	if not launch.is_installed("onnxruntime"):
 		launch.run_pip('install "onnxruntime>=1.16.0"')
