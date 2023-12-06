@@ -14,12 +14,6 @@ def get_timestamp() -> int:
 	return int(round(t * 1000))
 
 
-def set_device(value):
-	gl.device_type = value
-	with open(os.path.join(gl.BASE_PATH, "last_device.txt"), "w") as txt:
-		txt.write(value)
-
-
 def get_device():
 	if not gl.is_first_run:
 		return gl.device_type

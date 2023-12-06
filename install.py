@@ -3,12 +3,12 @@
 from pathlib import Path
 import subprocess
 import sys
+import os
 
 import launch
 import pkg_resources
-from scripts.facefusion_logging import logger
-from scripts.facefusion_utils import set_device
 
+BASE_PATH = os.path.join(Path(__file__).parents[1])
 _REQUIREMENT_PATH = Path(__file__).absolute().parent / "requirements.txt"
 
 
@@ -26,15 +26,20 @@ def pip_uninstall(*args):
     subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", *args])
 
 
+def set_device(value):
+	with open(os.path.join(BASE_PATH, "last_device.txt"), "w") as txt:
+		txt.write(value)
+
+
 import torch.cuda as cuda
 if cuda.is_available():
 	set_device('cuda')
-	logger.info("cuda available")
+	print(f'[ FACE_FUSION ] cuda available')
 	pip_uninstall("onnxruntime", "onnxruntime-gpu")
 	launch.run_pip('install -U "onnxruntime-gpu"')
 else:
 	set_device('cpu')
-	logger.info("use cpu")
+	print(f'[ FACE_FUSION ] use cpu')
 	pip_uninstall("onnxruntime", "onnxruntime-gpu")
 	launch.run_pip('install -U "onnxruntime"')
 
