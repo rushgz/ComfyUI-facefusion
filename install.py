@@ -8,7 +8,7 @@ import os
 import launch
 import pkg_resources
 
-BASE_PATH = os.path.join(Path(__file__).parents[1])
+DEVICE_INFO_PATH = Path(__file__).absolute().parent / "last_device.txt"
 _REQUIREMENT_PATH = Path(__file__).absolute().parent / "requirements.txt"
 
 
@@ -27,7 +27,7 @@ def pip_uninstall(*args):
 
 
 def set_device(value):
-	with open(os.path.join(BASE_PATH, "last_device.txt"), "w") as txt:
+	with open(DEVICE_INFO_PATH, "w") as txt:
 		txt.write(value)
 
 
