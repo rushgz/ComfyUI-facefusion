@@ -12,6 +12,7 @@ from facefusion.processors.frame.core import get_frame_processors_modules
 from facefusion.utilities import decode_execution_providers
 from facefusion.utilities import normalize_output_path
 from scripts.facefusion_logging import logger
+from scripts.facefusion_utils import get_device
 
 
 @dataclass
@@ -33,7 +34,9 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	# misc
 	facefusion.globals.skip_download = False
 	# execution
-	facefusion.globals.execution_providers = decode_execution_providers(['cuda', 'cpu'])
+	device = get_device()
+	logger.info(f"device: {device}")
+	facefusion.globals.execution_providers = decode_execution_providers([f'{device}'])
 	logger.info(f"device use {facefusion.globals.execution_providers}")
 	facefusion.globals.execution_thread_count = 1
 	facefusion.globals.execution_queue_count = 1

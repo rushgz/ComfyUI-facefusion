@@ -6,6 +6,8 @@ import sys
 
 import launch
 import pkg_resources
+from scripts.facefusion_logging import logger
+from scripts.facefusion_utils import set_device
 
 _REQUIREMENT_PATH = Path(__file__).absolute().parent / "requirements.txt"
 
@@ -20,14 +22,21 @@ def _get_installed_version(package: str) -> str | None:
     except Exception:
         return None
 
+def pip_uninstall(*args):
+    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", *args])
 
-if not launch.is_installed("onnxruntime") and not launch.is_installed("onnxruntime-gpu"):
-    import torch.cuda as cuda
 
-    if cuda.is_available():
-        launch.run_pip('install "onnxruntime-gpu>=1.16.0"')
-    else:
-        launch.run_pip('install "onnxruntime>=1.16.0"')
+import torch.cuda as cuda
+if cuda.is_available():
+	set_device('cuda')
+	logger.info("cuda available")
+	pip_uninstall("onnxruntime", "onnxruntime-gpu")
+	launch.run_pip('install -U "onnxruntime-gpu"')
+else:
+	set_device('cpu')
+	logger.info("use cpu")
+	pip_uninstall("onnxruntime", "onnxruntime-gpu")
+	launch.run_pip('install -U "onnxruntime"')
 
 
 with _REQUIREMENT_PATH.open() as fp:
