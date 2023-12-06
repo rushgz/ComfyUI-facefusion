@@ -47,7 +47,7 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	facefusion.globals.face_analyser_gender = None
 	facefusion.globals.face_detector_model = 'retinaface'
 	facefusion.globals.face_detector_size = '640x640'
-	facefusion.globals.face_detector_score = 0.6
+	facefusion.globals.face_detector_score = 0.72
 	# face selector
 	facefusion.globals.face_selector_mode = 'one'
 	facefusion.globals.reference_face_position = 0
