@@ -11,6 +11,8 @@ from facefusion.processors.frame import globals as frame_processors_globals
 from facefusion.processors.frame.core import get_frame_processors_modules
 from facefusion.utilities import decode_execution_providers
 from facefusion.utilities import normalize_output_path
+import scripts.facefusion_globals as gl
+from scripts.facefusion_logging import logger
 
 
 @dataclass
@@ -32,7 +34,12 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	# misc
 	facefusion.globals.skip_download = False
 	# execution
-	facefusion.globals.execution_providers = decode_execution_providers(['cuda', 'cpu'])
+	if gl.CUDA_AVAILABLE:
+		provider = ['cuda']
+	else:
+		provider = ['cpu']
+	facefusion.globals.execution_providers = decode_execution_providers(provider)
+	logger.info(f"device use {facefusion.globals.execution_providers}")
 	facefusion.globals.execution_thread_count = 1
 	facefusion.globals.execution_queue_count = 1
 	facefusion.globals.max_memory = None
@@ -42,7 +49,7 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	facefusion.globals.face_analyser_gender = None
 	facefusion.globals.face_detector_model = 'retinaface'
 	facefusion.globals.face_detector_size = '640x640'
-	facefusion.globals.face_detector_score = 0.75
+	facefusion.globals.face_detector_score = 0.6
 	# face selector
 	facefusion.globals.face_selector_mode = 'one'
 	facefusion.globals.reference_face_position = 0
