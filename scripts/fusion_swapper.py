@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Union
 
 import facefusion.globals
-from facefusion.core import conditional_process, limit_resources, pre_check
+from facefusion.core import conditional_process, limit_resources, pre_check, is_image
 from facefusion import face_analyser
 from facefusion.processors.frame import globals as frame_processors_globals
 from facefusion.processors.frame.core import get_frame_processors_modules
@@ -24,16 +24,22 @@ class ImageResult:
 		return None
 
 
-def apply_args(source_path, target_path, output_path, image_quality=100) -> None:
+def apply_args(source_path, target_path, output_path, image_quality, provider, detector_score) -> None:
 	# general
 	facefusion.globals.source_path = source_path
 	facefusion.globals.target_path = target_path
-	facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_path,
-														   facefusion.globals.target_path, output_path)
+	facefusion.globals.output_path = normalize_output_path(
+		facefusion.globals.source_path,
+		facefusion.globals.target_path,
+		output_path
+	)
 	# misc
 	facefusion.globals.skip_download = False
 	# execution
-	facefusion.globals.execution_providers = decode_execution_providers(['cpu'])
+	providers = decode_execution_providers([provider])
+	if len(providers) == 0:
+		providers = decode_execution_providers(['cpu'])
+	facefusion.globals.execution_providers = providers
 	logger.info(f"device use {facefusion.globals.execution_providers}")
 	facefusion.globals.execution_thread_count = 1
 	facefusion.globals.execution_queue_count = 1
@@ -44,7 +50,7 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	facefusion.globals.face_analyser_gender = None
 	facefusion.globals.face_detector_model = 'retinaface'
 	facefusion.globals.face_detector_size = '640x640'
-	facefusion.globals.face_detector_score = 0.72
+	facefusion.globals.face_detector_score = detector_score
 	# face selector
 	facefusion.globals.face_selector_mode = 'one'
 	facefusion.globals.reference_face_position = 0
@@ -63,9 +69,25 @@ def apply_args(source_path, target_path, output_path, image_quality=100) -> None
 	frame_processors_globals.face_enhancer_blend = 100
 
 
+def run(source_path, target_path, output_path, image_quality=100, provider="cpu", detector_score=0.72):
+	apply_args(source_path, target_path, output_path, image_quality, provider, detector_score)
+	limit_resources()
+	if not pre_check() or not face_analyser.pre_check():
+		return ImageResult()
+	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
+		if not frame_processor_module.pre_check():
+			return ImageResult()
+	conditional_process()
+	if is_image(output_path):
+		return ImageResult(path=facefusion.globals.output_path)
+	return ImageResult()
+
+
 def swap_face(
 	source_img: Image.Image,
 	target_img: Image.Image,
+	provider: str,
+	detector_score: float
 ) -> ImageResult:
 	if isinstance(source_img, str):  # source_img is a base64 string
 		import base64, io
@@ -83,12 +105,4 @@ def swap_face(
 	output_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 
 	# call FaceFusion
-	apply_args(source_path, target_path, output_path)
-	limit_resources()
-	if not pre_check() or not face_analyser.pre_check():
-		return ImageResult()
-	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
-		if not frame_processor_module.pre_check():
-			return ImageResult()
-	conditional_process()
-	return ImageResult(path=facefusion.globals.output_path)
+	return run(source_path, target_path, output_path, provider=provider, detector_score=detector_score)

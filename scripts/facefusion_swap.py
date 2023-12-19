@@ -24,9 +24,25 @@ class FaceFusionScript(scripts.Script):
 			with gr.Column():
 				img = gr.inputs.Image(type="pil")
 				enable = gr.Checkbox(False, placeholder="enable", label="Enable")
+				device = gr.Radio(
+					label="Execution Provider",
+					choices=["cpu", "cuda"],
+					value="cpu",
+					type="value",
+					scale=2
+				)
+				face_detector_score = gr.Slider(
+					label="Face Detector Score",
+					value=0.72,
+					step=0.02,
+					minimum=0,
+					maximum=1
+				)
 		return [
 			img,
 			enable,
+			device,
+			face_detector_score
 		]
 
 	def process(
@@ -34,9 +50,13 @@ class FaceFusionScript(scripts.Script):
 		p: StableDiffusionProcessing,
 		img,
 		enable,
+		device,
+		face_detector_score
 	):
 		self.source = img
 		self.enable = enable
+		self.device = device
+		self.face_detector_score = face_detector_score
 		if self.enable:
 			if self.source is None:
 				logger.error(f"Please provide a source face")
@@ -54,6 +74,8 @@ class FaceFusionScript(scripts.Script):
 				result: ImageResult = swap_face(
 					self.source,
 					image,
+					self.device,
+					self.face_detector_score
 				)
 				pp = scripts_postprocessing.PostprocessedImage(result.image())
 				pp.info = {}
