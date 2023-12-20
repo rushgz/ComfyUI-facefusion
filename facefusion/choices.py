@@ -2,7 +2,7 @@ from typing import List
 
 import numpy
 
-from facefusion.typing import FaceSelectorMode, FaceAnalyserOrder, FaceAnalyserAge, FaceAnalyserGender
+from facefusion.typing import FaceSelectorMode, FaceAnalyserOrder, FaceAnalyserAge, FaceAnalyserGender, FaceMaskType, FaceMaskRegion
 
 
 face_analyser_orders : List[FaceAnalyserOrder] = [ 'left-right', 'right-left', 'top-bottom', 'bottom-top', 'small-large', 'large-small', 'best-worst', 'worst-best' ]
@@ -11,6 +11,8 @@ face_analyser_genders : List[FaceAnalyserGender] = [ 'male', 'female' ]
 face_detector_models : List[str] = [ 'retinaface', 'yunet' ]
 face_detector_sizes : List[str] = [ '160x160', '320x320', '480x480', '512x512', '640x640', '768x768', '960x960', '1024x1024' ]
 face_selector_modes : List[FaceSelectorMode] = [ 'reference', 'one', 'many' ]
+face_mask_types : List[FaceMaskType] = [ 'box', 'occlusion', 'region' ]
+face_mask_regions : List[FaceMaskRegion] = [ 'skin', 'left-eyebrow', 'right-eyebrow', 'left-eye', 'right-eye', 'eye-glasses', 'nose', 'mouth', 'upper-lip', 'lower-lip' ]
 
 execution_thread_count_range : List[int] = numpy.arange(1, 129, 1).tolist()
 execution_queue_count_range : List[int] = numpy.arange(1, 33, 1).tolist()

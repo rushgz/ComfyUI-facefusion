@@ -4,6 +4,7 @@ from pathlib import Path
 
 import launch
 import pkg_resources
+from typing import Optional
 
 _REQUIREMENT_PATH = Path(__file__).absolute().parent / "requirements.txt"
 
@@ -12,7 +13,7 @@ def _get_comparable_version(version: str) -> tuple:
     return tuple(version.split("."))
 
 
-def _get_installed_version(package: str) -> str | None:
+def _get_installed_version(package: str) -> Optional[str]:
     try:
         return pkg_resources.get_distribution(package).version
     except Exception:
@@ -23,9 +24,9 @@ if not launch.is_installed("onnxruntime") and not launch.is_installed("onnxrunti
     import torch.cuda as cuda
 
     if cuda.is_available():
-        launch.run_pip('install "onnxruntime-gpu>=1.16.0"')
+        launch.run_pip('install "onnxruntime-gpu>=1.16.3"')
     else:
-        launch.run_pip('install "onnxruntime>=1.16.0"')
+        launch.run_pip('install "onnxruntime>=1.16.3"')
 
 
 with _REQUIREMENT_PATH.open() as fp:

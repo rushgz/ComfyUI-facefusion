@@ -22,7 +22,9 @@ class FaceFusionScript(scripts.Script):
 	def ui(self, is_img2img):
 		with gr.Accordion(f"FaceFusion", open=False):
 			with gr.Column():
-				img = gr.inputs.Image(type="pil")
+				with gr.Row():
+					img = gr.Image(type="pil", label="Single Source Image")
+					imgs = gr.Files(label="Multiple Source Images", file_types=["image"])
 				enable = gr.Checkbox(False, placeholder="enable", label="Enable")
 				device = gr.Radio(
 					label="Execution Provider",
@@ -42,7 +44,8 @@ class FaceFusionScript(scripts.Script):
 			img,
 			enable,
 			device,
-			face_detector_score
+			face_detector_score,
+			imgs
 		]
 
 	def process(
@@ -51,12 +54,14 @@ class FaceFusionScript(scripts.Script):
 		img,
 		enable,
 		device,
-		face_detector_score
+		face_detector_score,
+		imgs
 	):
 		self.source = img
 		self.enable = enable
 		self.device = device
 		self.face_detector_score = face_detector_score
+		self.source_imgs = imgs
 		if self.enable:
 			if self.source is None:
 				logger.error(f"Please provide a source face")
@@ -75,7 +80,8 @@ class FaceFusionScript(scripts.Script):
 					self.source,
 					image,
 					self.device,
-					self.face_detector_score
+					self.face_detector_score,
+					self.source_imgs
 				)
 				pp = scripts_postprocessing.PostprocessedImage(result.image())
 				pp.info = {}
