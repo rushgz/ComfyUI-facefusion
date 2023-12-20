@@ -21,6 +21,8 @@ class ImageResult:
 
 def get_images_from_list(imgs: Union[List, None]):
 	result = []
+	if imgs is None:
+		return result
 	for x in imgs:
 		import base64, io
 		if 'base64,' in x:  # check if the base64 string has a data URL scheme
