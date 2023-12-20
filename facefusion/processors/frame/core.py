@@ -26,7 +26,8 @@ FRAME_PROCESSORS_METHODS =\
 	'process_frame',
 	'process_frames',
 	'process_image',
-	'post_process'
+	'post_process',
+	'post_models'
 ]
 
 

@@ -149,10 +149,13 @@ def pre_process(mode : ProcessMode) -> bool:
 
 
 def post_process() -> None:
+	read_static_image.cache_clear()
+
+
+def post_models() -> None:
 	clear_frame_processor()
 	clear_face_analyser()
 	clear_face_occluder()
-	read_static_image.cache_clear()
 
 
 def enhance_face(target_face: Face, temp_frame: Frame) -> Frame:

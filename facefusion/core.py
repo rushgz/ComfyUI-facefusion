@@ -44,6 +44,7 @@ def apply_args(source_path, target_path, output_path, provider, detector_score) 
 	facefusion.globals.skip_download = False
 	facefusion.globals.log_level = 'info'
 	# execution
+	facefusion.globals.current_device = provider
 	providers = decode_execution_providers([provider])
 	if len(providers) == 0:
 		providers = decode_execution_providers(['cpu'])
@@ -147,6 +148,10 @@ def process_image() -> None:
 	# process frame
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
 		logger.info(wording.get('processing'), frame_processor_module.NAME)
+		if facefusion.globals.current_device != facefusion.globals.last_device:
+			logger.info(f'device changed, post models. current: {facefusion.globals.current_device}, last: {facefusion.globals.last_device}', frame_processor_module.NAME)
+			frame_processor_module.post_models()
+		facefusion.globals.last_device = facefusion.globals.current_device
 		frame_processor_module.process_image(facefusion.globals.source_paths, facefusion.globals.output_path,
 											 facefusion.globals.output_path)
 		frame_processor_module.post_process()
