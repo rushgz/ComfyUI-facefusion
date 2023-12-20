@@ -148,8 +148,9 @@ def process_image() -> None:
 	# process frame
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
 		logger.info(wording.get('processing'), frame_processor_module.NAME)
+		logger.info(f'current device: {facefusion.globals.current_device}, last device: {facefusion.globals.last_device}', frame_processor_module.NAME)
 		if facefusion.globals.current_device != facefusion.globals.last_device:
-			logger.info(f'device changed, post models. current: {facefusion.globals.current_device}, last: {facefusion.globals.last_device}', frame_processor_module.NAME)
+			logger.info('device changed, post models', frame_processor_module.NAME)
 			frame_processor_module.post_models()
 		facefusion.globals.last_device = facefusion.globals.current_device
 		frame_processor_module.process_image(facefusion.globals.source_paths, facefusion.globals.output_path,
