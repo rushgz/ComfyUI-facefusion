@@ -58,7 +58,6 @@ def swap_face(
 	source_img.close()
 	target_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 	target_img.save(target_path)
-	target_img.close()
 	output_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 
 	# call FaceFusion
