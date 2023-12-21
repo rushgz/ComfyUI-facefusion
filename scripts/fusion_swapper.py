@@ -67,4 +67,4 @@ def swap_face(
 	result = run(paths, target_path, output_path, provider=provider, detector_score=detector_score)
 	if result:
 		return ImageResult(path=result)
-	return ImageResult()
+	return ImageResult(path=target_path)
