@@ -31,7 +31,6 @@ def get_images_from_list(imgs: Union[List, None]):
 			source_img = Image.open(io.BytesIO(img_bytes))
 			source_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 			source_img.save(source_path)
-			source_img.close()
 			path = source_path
 		else:
 			path = os.path.abspath(x.name)
@@ -57,7 +56,6 @@ def swap_face(
 		source_img = Image.open(io.BytesIO(img_bytes))
 	source_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 	source_img.save(source_path)
-	source_img.close()
 	target_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 	target_img.save(target_path)
 	output_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
