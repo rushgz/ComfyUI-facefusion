@@ -10,3 +10,26 @@ This repo makes it an extension of [AUTOMATIC1111 Webui](https://github.com/AUTO
 
 -   Clone this repo into `stable-diffusion-webui/extensions` folder.
 -   Start the Webui.
+
+## SD webui alwayson_scripts api
+
+```python
+alwayson_scripts = {
+	"facefusion": {
+		"args": [
+			# face image
+			get_base64_image('./t1.png'),
+			# Enable
+			True,
+			# Execution Provider
+			"cuda",
+			# Face Detector Score
+			0.6,
+			# Face Mask Blur
+			0.7,
+			# Batch Sources Images
+			[get_base64_image('./t2.png'), get_base64_image('./t3.png')]
+		]
+	}
+}
+```
