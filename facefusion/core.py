@@ -31,7 +31,7 @@ if platform.system().lower() == 'darwin':
 	ssl._create_default_https_context = ssl._create_unverified_context
 
 
-def apply_args(source_path, target_path, output_path, provider, detector_score) -> None:
+def apply_args(source_path, target_path, output_path, provider, detector_score, mask_blur) -> None:
 	# general
 	facefusion.globals.source_paths = source_path
 	facefusion.globals.target_path = target_path
@@ -67,7 +67,7 @@ def apply_args(source_path, target_path, output_path, provider, detector_score) 
 	facefusion.globals.reference_frame_number = 0
 	# face mask
 	facefusion.globals.face_mask_types = ['box']
-	facefusion.globals.face_mask_blur = 0.3
+	facefusion.globals.face_mask_blur = mask_blur
 	facefusion.globals.face_mask_padding = (0, 0, 0, 0)
 	facefusion.globals.face_mask_regions = facefusion.choices.face_mask_regions
 	# output creation
@@ -80,8 +80,8 @@ def apply_args(source_path, target_path, output_path, provider, detector_score) 
 	frame_processors_globals.face_enhancer_blend = 100
 
 
-def run(source_path, target_path, output_path, provider="cpu", detector_score=0.72):
-	apply_args(source_path, target_path, output_path, provider, detector_score)
+def run(source_path, target_path, output_path, provider="cpu", detector_score=0.72, mask_blur=0.3):
+	apply_args(source_path, target_path, output_path, provider, detector_score, mask_blur)
 	logger.init(facefusion.globals.log_level)
 	limit_resources()
 	if not pre_check() or not face_analyser.pre_check() or not face_masker.pre_check():

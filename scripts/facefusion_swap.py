@@ -40,11 +40,19 @@ class FaceFusionScript(scripts.Script):
 					minimum=0,
 					maximum=1
 				)
+				mask_blur = gr.Slider(
+					label="Face Mask Blur",
+					value=0.3,
+					step=0.05,
+					minimum=0,
+					maximum=1
+				)
 		return [
 			img,
 			enable,
 			device,
 			face_detector_score,
+			mask_blur,
 			imgs
 		]
 
@@ -55,12 +63,14 @@ class FaceFusionScript(scripts.Script):
 		enable,
 		device,
 		face_detector_score,
+		mask_blur,
 		imgs
 	):
 		self.source = img
 		self.enable = enable
 		self.device = device
 		self.face_detector_score = face_detector_score
+		self.mask_blur = mask_blur
 		self.source_imgs = imgs
 		if self.enable:
 			if self.source is None:
@@ -81,6 +91,7 @@ class FaceFusionScript(scripts.Script):
 					image,
 					self.device,
 					self.face_detector_score,
+					self.mask_blur,
 					self.source_imgs
 				)
 				pp = scripts_postprocessing.PostprocessedImage(result.image())
