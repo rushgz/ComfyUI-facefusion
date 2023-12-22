@@ -24,16 +24,19 @@ def get_images_from_list(imgs: Union[List, None]):
 	if imgs is None:
 		return result
 	for x in imgs:
-		import base64, io
-		if 'base64,' in x:  # check if the base64 string has a data URL scheme
-			base64_data = x.split('base64,')[-1]
+		try:
+			path = os.path.abspath(x.name)
+		except:
+			import base64, io
+			if 'base64,' in x:  # check if the base64 string has a data URL scheme
+				base64_data = x.split('base64,')[-1]
+			else:
+				base64_data = x
 			img_bytes = base64.b64decode(base64_data)
 			source_img = Image.open(io.BytesIO(img_bytes))
 			source_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 			source_img.save(source_path)
 			path = source_path
-		else:
-			path = os.path.abspath(x.name)
 		result.append(path)
 	return result
 
