@@ -1,8 +1,8 @@
 from typing import List
 
-import numpy
 
 from facefusion.typing import FaceSelectorMode, FaceAnalyserOrder, FaceAnalyserAge, FaceAnalyserGender, FaceMaskType, FaceMaskRegion
+from facefusion.common_helper import create_range
 
 
 face_analyser_orders : List[FaceAnalyserOrder] = [ 'left-right', 'right-left', 'top-bottom', 'bottom-top', 'small-large', 'large-small', 'best-worst', 'worst-best' ]
@@ -14,11 +14,11 @@ face_selector_modes : List[FaceSelectorMode] = [ 'reference', 'one', 'many' ]
 face_mask_types : List[FaceMaskType] = [ 'box', 'occlusion', 'region' ]
 face_mask_regions : List[FaceMaskRegion] = [ 'skin', 'left-eyebrow', 'right-eyebrow', 'left-eye', 'right-eye', 'eye-glasses', 'nose', 'mouth', 'upper-lip', 'lower-lip' ]
 
-execution_thread_count_range : List[int] = numpy.arange(1, 129, 1).tolist()
-execution_queue_count_range : List[int] = numpy.arange(1, 33, 1).tolist()
-max_memory_range : List[int] = numpy.arange(0, 129, 1).tolist()
-face_detector_score_range : List[float] = numpy.arange(0.0, 1.05, 0.05).tolist()
-face_mask_blur_range : List[float] = numpy.arange(0.0, 1.05, 0.05).tolist()
-face_mask_padding_range : List[float] = numpy.arange(0, 101, 1).tolist()
-reference_face_distance_range : List[float] = numpy.arange(0.0, 1.55, 0.05).tolist()
-output_image_quality_range : List[int] = numpy.arange(0, 101, 1).tolist()
+execution_thread_count_range : List[float] = create_range(1, 128, 1)
+execution_queue_count_range : List[float] = create_range(1, 32, 1)
+max_memory_range : List[float] = create_range(0, 128, 1)
+face_detector_score_range : List[float] = create_range(0.0, 1.0, 0.05)
+face_mask_blur_range : List[float] = create_range(0.0, 1.0, 0.05)
+face_mask_padding_range : List[float] = create_range(0, 100, 1)
+reference_face_distance_range : List[float] = create_range(0.0, 1.5, 0.05)
+output_image_quality_range : List[float] = create_range(0, 100, 1)

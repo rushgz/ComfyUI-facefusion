@@ -11,7 +11,7 @@ from facefusion.face_analyser import get_many_faces, clear_face_analyser, find_s
 from facefusion.face_helper import warp_face, paste_back
 from facefusion.face_store import get_reference_faces
 from facefusion.typing import Face, FaceSet, Frame, Update_Process, ProcessMode, ModelSet, OptionsWithModel
-from facefusion.cli_helper import create_metavar
+from facefusion.common_helper import create_metavar
 from facefusion.filesystem import is_file, is_image, is_video, resolve_relative_path
 from facefusion.download import conditional_download, is_download_done
 from facefusion.vision import read_image, read_static_image, write_image
