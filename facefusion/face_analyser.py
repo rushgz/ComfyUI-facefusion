@@ -11,6 +11,7 @@ from facefusion.face_helper import warp_face, create_static_anchors, distance_to
 from facefusion.filesystem import resolve_relative_path
 from facefusion.typing import Frame, Face, FaceSet, FaceAnalyserOrder, FaceAnalyserAge, FaceAnalyserGender, ModelSet, Bbox, Kps, Score, Embedding
 from facefusion.vision import resize_frame_dimension
+from facefusion import logger
 
 FACE_ANALYSER = None
 THREAD_SEMAPHORE : threading.Semaphore = threading.Semaphore()
@@ -267,8 +268,10 @@ def get_many_faces(frame : Frame) -> List[Face]:
 	try:
 		faces_cache = get_static_faces(frame)
 		if faces_cache:
+			logger.info(f"use faces cache", "FACE_ANALYSER")
 			faces = faces_cache
 		else:
+			logger.info(f"faces cache is none, start extract faces", "FACE_ANALYSER")
 			faces = extract_faces(frame)
 			set_static_faces(frame, faces)
 		if facefusion.globals.face_analyser_order:
