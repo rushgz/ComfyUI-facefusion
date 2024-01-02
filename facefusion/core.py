@@ -87,7 +87,7 @@ def run(source_path, target_path, output_path, provider="cpu", detector_score=0.
 	logger.init(facefusion.globals.log_level)
 	limit_resources()
 	if (not pre_check() or not face_analyser.pre_check() or not face_masker.pre_check() or not (
-		not skip_nsfw and content_analyser.pre_check())):
+		(not skip_nsfw) and content_analyser.pre_check())):
 		return None
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
 		if not frame_processor_module.pre_check():
@@ -147,7 +147,7 @@ def conditional_append_reference_faces() -> None:
 
 
 def process_image() -> None:
-	if not facefusion.globals.skip_nsfw and analyse_image(facefusion.globals.target_path):
+	if (not facefusion.globals.skip_nsfw) and analyse_image(facefusion.globals.target_path):
 		return
 	shutil.copy2(facefusion.globals.target_path, facefusion.globals.output_path)
 	# process frame
