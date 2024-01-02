@@ -162,7 +162,8 @@ def process_frames(source_paths : List[str], temp_frame_paths : List[str], updat
 		update_progress()
 
 
-def process_image(source_paths : List[str], target_path : str, output_path : str) -> None:
+def process_image(source_paths : List[str], target_path : str, output_path : str) -> bool:
 	target_frame = read_static_image(target_path)
 	result = process_frame(None, None, target_frame)
 	write_image(output_path, result)
+	return True
