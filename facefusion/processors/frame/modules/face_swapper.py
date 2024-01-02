@@ -260,21 +260,30 @@ def get_reference_frame(source_face : Face, target_face : Face, temp_frame : Fra
 	return swap_face(source_face, target_face, temp_frame)
 
 
-def process_frame(source_face : Face, reference_faces : FaceSet, temp_frame : Frame) -> Frame:
+def process_frame(source_face : Face, reference_faces : FaceSet, temp_frame : Frame) -> Optional[Frame]:
 	if 'reference' in facefusion.globals.face_selector_mode:
 		similar_faces = find_similar_faces(temp_frame, reference_faces, facefusion.globals.reference_face_distance)
 		if similar_faces:
 			for similar_face in similar_faces:
 				temp_frame = swap_face(source_face, similar_face, temp_frame)
+		else:
+			logger.error("No target face detected" + wording.get('exclamation_mark'), NAME)
+			return None
 	if 'one' in facefusion.globals.face_selector_mode:
 		target_face = get_one_face(temp_frame)
 		if target_face:
 			temp_frame = swap_face(source_face, target_face, temp_frame)
+		else:
+			logger.error("No target face detected" + wording.get('exclamation_mark'), NAME)
+			return None
 	if 'many' in facefusion.globals.face_selector_mode:
 		many_faces = get_many_faces(temp_frame)
 		if many_faces:
 			for target_face in many_faces:
 				temp_frame = swap_face(source_face, target_face, temp_frame)
+		else:
+			logger.error("No target face detected" + wording.get('exclamation_mark'), NAME)
+			return None
 	return temp_frame
 
 
@@ -295,4 +304,5 @@ def process_image(source_paths : List[str], target_path : str, output_path : str
 	reference_faces = get_reference_faces() if 'reference' in facefusion.globals.face_selector_mode else None
 	target_frame = read_static_image(target_path)
 	result_frame = process_frame(source_face, reference_faces, target_frame)
-	write_image(output_path, result_frame)
+	if result_frame:
+		write_image(output_path, result_frame)
