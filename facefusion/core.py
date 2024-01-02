@@ -147,6 +147,7 @@ def conditional_append_reference_faces() -> None:
 
 
 def process_image() -> None:
+	logger.info(f"start process, skip_nsfw: {facefusion.globals.skip_nsfw}", "CORE")
 	if (not facefusion.globals.skip_nsfw) and analyse_image(facefusion.globals.target_path):
 		return
 	shutil.copy2(facefusion.globals.target_path, facefusion.globals.output_path)
