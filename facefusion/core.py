@@ -148,13 +148,11 @@ def conditional_append_reference_faces() -> None:
 
 
 def process_image() -> None:
-	logger.info(f"start process, skip_nsfw: {facefusion.globals.skip_nsfw}", "CORE")
 	if (not facefusion.globals.skip_nsfw) and analyse_image(facefusion.globals.target_path):
 		logger.info(f"skip process, source image is nsfw", "CORE")
 		return
 	shutil.copy2(facefusion.globals.target_path, facefusion.globals.output_path)
 	# process frame
-	logger.info(f'current device: {facefusion.globals.current_device}, last device: {facefusion.globals.last_device}',"CORE")
 	need_post_models = facefusion.globals.current_device != facefusion.globals.last_device
 	facefusion.globals.last_device = facefusion.globals.current_device
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
