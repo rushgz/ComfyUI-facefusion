@@ -25,7 +25,9 @@ class FaceFusionScript(scripts.Script):
 				with gr.Row():
 					img = gr.Image(type="pil", label="Single Source Image")
 					imgs = gr.Files(label="Multiple Source Images", file_types=["image"])
-				enable = gr.Checkbox(False, placeholder="enable", label="Enable")
+				with gr.Row():
+					enable = gr.Checkbox(False, placeholder="enable", label="Enable")
+					skip_nsfw = gr.Checkbox(True, placeholder="skip_nsfw", label="Skip Check NSFW")
 				device = gr.Radio(
 					label="Execution Provider",
 					choices=["cpu", "cuda"],
@@ -35,14 +37,14 @@ class FaceFusionScript(scripts.Script):
 				)
 				face_detector_score = gr.Slider(
 					label="Face Detector Score",
-					value=0.72,
+					value=0.65,
 					step=0.02,
 					minimum=0,
 					maximum=1
 				)
 				mask_blur = gr.Slider(
 					label="Face Mask Blur",
-					value=0.3,
+					value=0.7,
 					step=0.05,
 					minimum=0,
 					maximum=1
@@ -53,7 +55,8 @@ class FaceFusionScript(scripts.Script):
 			device,
 			face_detector_score,
 			mask_blur,
-			imgs
+			imgs,
+			skip_nsfw
 		]
 
 	def process(
@@ -64,7 +67,8 @@ class FaceFusionScript(scripts.Script):
 		device,
 		face_detector_score,
 		mask_blur,
-		imgs
+		imgs,
+		skip_nsfw
 	):
 		self.source = img
 		self.enable = enable
@@ -72,6 +76,7 @@ class FaceFusionScript(scripts.Script):
 		self.face_detector_score = face_detector_score
 		self.mask_blur = mask_blur
 		self.source_imgs = imgs
+		self.skip_nsfw = skip_nsfw
 		if self.enable:
 			if self.source is None:
 				logger.error(f"Please provide a source face")
@@ -92,7 +97,8 @@ class FaceFusionScript(scripts.Script):
 					self.device,
 					self.face_detector_score,
 					self.mask_blur,
-					self.source_imgs
+					self.source_imgs,
+					self.skip_nsfw
 				)
 				pp = scripts_postprocessing.PostprocessedImage(result.image())
 				pp.info = {}

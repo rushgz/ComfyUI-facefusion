@@ -14,7 +14,8 @@ import facefusion.globals
 from facefusion.face_analyser import get_one_face, get_average_face
 from facefusion.face_store import get_reference_faces, append_reference_face
 from facefusion.vision import read_image, read_static_images
-from facefusion import face_analyser, face_masker, logger, wording
+from facefusion import face_analyser, face_masker, content_analyser, logger, wording
+from facefusion.content_analyser import analyse_image
 from facefusion.processors.frame.core import get_frame_processors_modules
 from facefusion.execution_helper import decode_execution_providers
 from facefusion.normalizer import normalize_output_path
@@ -31,7 +32,7 @@ if platform.system().lower() == 'darwin':
 	ssl._create_default_https_context = ssl._create_unverified_context
 
 
-def apply_args(source_path, target_path, output_path, provider, detector_score, mask_blur) -> None:
+def apply_args(source_path, target_path, output_path, provider, detector_score, mask_blur, skip_nsfw) -> None:
 	# general
 	facefusion.globals.source_paths = source_path
 	facefusion.globals.target_path = target_path
@@ -60,6 +61,7 @@ def apply_args(source_path, target_path, output_path, provider, detector_score, 
 	facefusion.globals.face_detector_model = 'retinaface'
 	facefusion.globals.face_detector_size = '640x640'
 	facefusion.globals.face_detector_score = detector_score
+	facefusion.globals.skip_nsfw = skip_nsfw
 	# face selector
 	facefusion.globals.face_selector_mode = 'one'
 	facefusion.globals.reference_face_position = 0
@@ -80,11 +82,12 @@ def apply_args(source_path, target_path, output_path, provider, detector_score, 
 	frame_processors_globals.face_enhancer_blend = 100
 
 
-def run(source_path, target_path, output_path, provider="cpu", detector_score=0.72, mask_blur=0.3):
-	apply_args(source_path, target_path, output_path, provider, detector_score, mask_blur)
+def run(source_path, target_path, output_path, provider="cpu", detector_score=0.6, mask_blur=0.3, skip_nsfw=True):
+	apply_args(source_path, target_path, output_path, provider, detector_score, mask_blur, skip_nsfw)
 	logger.init(facefusion.globals.log_level)
 	limit_resources()
-	if not pre_check() or not face_analyser.pre_check() or not face_masker.pre_check():
+	if (not pre_check() or not face_analyser.pre_check() or not face_masker.pre_check() or not (
+		not skip_nsfw and content_analyser.pre_check())):
 		return None
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
 		if not frame_processor_module.pre_check():
@@ -144,6 +147,8 @@ def conditional_append_reference_faces() -> None:
 
 
 def process_image() -> None:
+	if not facefusion.globals.skip_nsfw and analyse_image(facefusion.globals.target_path):
+		return
 	shutil.copy2(facefusion.globals.target_path, facefusion.globals.output_path)
 	# process frame
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):

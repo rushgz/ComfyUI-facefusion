@@ -22,6 +22,7 @@ face_detector_model : Optional[FaceDetectorModel] = None
 face_detector_size : Optional[str] = None
 face_detector_score : Optional[float] = None
 face_recognizer_model : Optional[FaceRecognizerModel] = None
+skip_nsfw : Optional[bool] = None
 # face selector
 face_selector_mode : Optional[FaceSelectorMode] = None
 reference_face_position : Optional[int] = None

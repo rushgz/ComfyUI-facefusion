@@ -47,7 +47,8 @@ def swap_face(
 	provider: str,
 	detector_score: float,
 	mask_blur: float,
-	source_imgs: Union[List, None] = None
+	source_imgs: Union[List, None] = None,
+	skip_nsfw: bool = True
 ) -> ImageResult:
 	if isinstance(source_img, str):  # source_img is a base64 string
 		import base64, io
@@ -66,7 +67,7 @@ def swap_face(
 
 	# call FaceFusion
 	paths = [source_path, *get_images_from_list(source_imgs)]
-	result = run(paths, target_path, output_path, provider=provider, detector_score=detector_score, mask_blur=mask_blur)
+	result = run(paths, target_path, output_path, provider=provider, detector_score=detector_score, mask_blur=mask_blur, skip_nsfw=skip_nsfw)
 	if result:
 		return ImageResult(path=result)
 	return ImageResult(path=target_path)

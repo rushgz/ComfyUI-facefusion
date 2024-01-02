@@ -24,11 +24,13 @@ alwayson_scripts = {
 			# Execution Provider
 			"cuda",
 			# Face Detector Score
-			0.6,
+			0.65,
 			# Face Mask Blur
 			0.7,
 			# Batch Sources Images
-			[get_base64_image('./t2.png'), get_base64_image('./t3.png')]
+			[get_base64_image('./t2.png'), get_base64_image('./t3.png')],
+			# Skip check nsfw
+			True
 		]
 	}
 }
