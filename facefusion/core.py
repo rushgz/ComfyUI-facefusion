@@ -86,8 +86,7 @@ def run(source_path, target_path, output_path, provider="cpu", detector_score=0.
 	apply_args(source_path, target_path, output_path, provider, detector_score, mask_blur, skip_nsfw)
 	logger.init(facefusion.globals.log_level)
 	limit_resources()
-	if (not pre_check() or not face_analyser.pre_check() or not face_masker.pre_check() or not (
-		(not skip_nsfw) and content_analyser.pre_check())):
+	if (not pre_check() or not face_analyser.pre_check() or not face_masker.pre_check() or not ((not skip_nsfw) and content_analyser.pre_check())):
 		return None
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
 		if not frame_processor_module.pre_check():

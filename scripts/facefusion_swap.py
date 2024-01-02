@@ -97,8 +97,8 @@ class FaceFusionScript(scripts.Script):
 					self.device,
 					self.face_detector_score,
 					self.mask_blur,
-					self.source_imgs,
-					self.skip_nsfw
+					self.skip_nsfw,
+					self.source_imgs
 				)
 				pp = scripts_postprocessing.PostprocessedImage(result.image())
 				pp.info = {}
