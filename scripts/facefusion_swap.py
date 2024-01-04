@@ -8,7 +8,7 @@ from modules.processing import (
 )
 
 from scripts.facefusion_logging import logger
-from scripts.fusion_swapper import swap_face, ImageResult
+from scripts.fusion_swapper import swap_face
 from scripts.facefusion_utils import get_timestamp
 
 
