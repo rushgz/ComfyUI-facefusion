@@ -91,7 +91,7 @@ class FaceFusionScript(scripts.Script):
 				st = get_timestamp()
 				logger.info("FaceFusion enabled, start process")
 				image: Image.Image = script_pp.image
-				result: ImageResult = swap_face(
+				result: Image.Image = swap_face(
 					self.source,
 					image,
 					self.device,
@@ -100,7 +100,7 @@ class FaceFusionScript(scripts.Script):
 					self.skip_nsfw,
 					self.source_imgs
 				)
-				pp = scripts_postprocessing.PostprocessedImage(result.image())
+				pp = scripts_postprocessing.PostprocessedImage(result)
 				pp.info = {}
 				p.extra_generation_params.update(pp.info)
 				script_pp.image = pp.image

@@ -1,7 +1,6 @@
 # coding=utf-8
 import os
 import tempfile
-from dataclasses import dataclass
 from typing import Union, List
 
 from PIL import Image
@@ -9,20 +8,11 @@ from PIL import Image
 from facefusion.core import run
 
 
-@dataclass
-class ImageResult:
-	path: Union[str, None] = None
-
-	def image(self) -> Union[Image.Image, None]:
-		if self.path:
-			return Image.open(self.path)
-		return None
-
-
 def get_images_from_list(imgs: Union[List, None]):
 	result = []
+	tmp_paths = []
 	if imgs is None:
-		return result
+		return result, tmp_paths
 	for x in imgs:
 		try:
 			path = os.path.abspath(x.name)
@@ -37,8 +27,9 @@ def get_images_from_list(imgs: Union[List, None]):
 			source_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 			source_img.save(source_path)
 			path = source_path
+			tmp_paths.append(source_path)
 		result.append(path)
-	return result
+	return result, tmp_paths
 
 
 def swap_face(
@@ -49,7 +40,7 @@ def swap_face(
 	mask_blur: float,
 	skip_nsfw: bool = True,
 	source_imgs: Union[List, None] = None
-) -> ImageResult:
+) -> Image.Image:
 	if isinstance(source_img, str):  # source_img is a base64 string
 		import base64, io
 		if 'base64,' in source_img:  # check if the base64 string has a data URL scheme
@@ -66,11 +57,21 @@ def swap_face(
 	output_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 
 	# call FaceFusion
-	paths = [source_path, *get_images_from_list(source_imgs)]
+	source_path_list, tmp_paths = get_images_from_list(source_imgs)
+	paths = [source_path, *source_path_list]
 	result = run(
 		source_path=paths, target_path=target_path, output_path=output_path,
 		provider=provider, detector_score=detector_score, mask_blur=mask_blur, skip_nsfw=skip_nsfw
 	)
 	if result:
-		return ImageResult(path=result)
-	return ImageResult(path=target_path)
+		result_image = Image.open(result)
+	else:
+		result_image = target_img
+
+	# clear temp files
+	tmp_paths.append(source_path)
+	tmp_paths.append(target_path)
+	tmp_paths.append(output_path)
+	for tmp in tmp_paths:
+		os.remove(tmp)
+	return result_image
