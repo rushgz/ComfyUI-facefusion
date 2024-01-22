@@ -55,3 +55,4 @@ frame_processors : List[str] = []
 
 current_device: str = 'cpu'
 last_device: str = 'cpu'
+model_path_checked = False

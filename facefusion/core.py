@@ -83,16 +83,16 @@ def apply_args(source_path, target_path, output_path, provider, detector_score, 
 
 def run(source_path, target_path, output_path, provider="cpu", detector_score=0.6, mask_blur=0.3, skip_nsfw=True):
 	apply_args(source_path, target_path, output_path, provider, detector_score, mask_blur, skip_nsfw)
-	logger.init(facefusion.globals.log_level)
-	if facefusion.globals.system_memory_limit > 0:
-		limit_system_memory(facefusion.globals.system_memory_limit)
-	if not pre_check() or not face_analyser.pre_check() or not face_masker.pre_check():
-		return None
+	if not facefusion.globals.model_path_checked:
+		if facefusion.globals.system_memory_limit > 0:
+			limit_system_memory(facefusion.globals.system_memory_limit)
+		if not pre_check() or not face_analyser.pre_check() or not face_masker.pre_check():
+			return None
+		for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
+			if not frame_processor_module.pre_check():
+				return None
 	if not skip_nsfw and not content_analyser.pre_check():
 		return None
-	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
-		if not frame_processor_module.pre_check():
-			return None
 	conditional_process()
 	if is_image(output_path):
 		return facefusion.globals.output_path
@@ -108,13 +108,15 @@ def pre_check() -> bool:
 
 def conditional_process() -> None:
 	start_time = time.time()
-	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
-		while not frame_processor_module.post_check():
-			logger.disable()
-			sleep(0.5)
-		logger.enable()
-		if not frame_processor_module.pre_process('output'):
-			return
+	if not facefusion.globals.model_path_checked:
+		for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
+			while not frame_processor_module.post_check():
+				logger.disable()
+				sleep(0.5)
+			logger.enable()
+			if not frame_processor_module.pre_process('output'):
+				return
+	facefusion.globals.model_path_checked = True
 	conditional_append_reference_faces()
 	if is_image(facefusion.globals.target_path):
 		process_image(start_time)
