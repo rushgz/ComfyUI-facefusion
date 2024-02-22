@@ -24,9 +24,9 @@ if not launch.is_installed("onnxruntime") and not launch.is_installed("onnxrunti
     import torch.cuda as cuda
 
     if cuda.is_available():
-        launch.run_pip('install "onnxruntime-gpu>=1.16.3"')
+        launch.run_pip('install "onnxruntime-gpu>=1.17.0"')
     else:
-        launch.run_pip('install "onnxruntime>=1.16.3"')
+        launch.run_pip('install "onnxruntime>=1.17.0"')
 
 
 with _REQUIREMENT_PATH.open() as fp:

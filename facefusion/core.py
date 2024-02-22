@@ -57,7 +57,7 @@ def apply_args(source_path, target_path, output_path, provider, detector_score, 
 	facefusion.globals.face_analyser_order = 'large-small'
 	facefusion.globals.face_analyser_age = None
 	facefusion.globals.face_analyser_gender = None
-	facefusion.globals.face_detector_model = 'retinaface'
+	facefusion.globals.face_detector_model = 'yoloface'
 	facefusion.globals.face_detector_size = '640x640'
 	facefusion.globals.face_detector_score = detector_score
 	facefusion.globals.skip_nsfw = skip_nsfw
