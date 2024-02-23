@@ -67,7 +67,7 @@ def apply_args(source_path, target_path, output_path, provider, detector_score, 
 	facefusion.globals.reference_face_distance = 0.6
 	facefusion.globals.reference_frame_number = 0
 	# face mask
-	facefusion.globals.face_mask_types = ['box']
+	facefusion.globals.face_mask_types = facefusion.choices.face_mask_types
 	facefusion.globals.face_mask_blur = mask_blur
 	facefusion.globals.face_mask_padding = (0, 0, 0, 0)
 	facefusion.globals.face_mask_regions = facefusion.choices.face_mask_regions
