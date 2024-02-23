@@ -268,7 +268,7 @@ def process_frames(source_path : List[str], queue_payloads : List[QueuePayload],
 		update_progress()
 
 
-def process_image(source_path : str, target_path : str, output_path : str) -> None:
+def process_image(source_path : str, target_path : str, output_path : str) -> bool:
 	reference_faces = get_reference_faces() if 'reference' in facefusion.globals.face_selector_mode else None
 	target_vision_frame = read_static_image(target_path)
 	result_frame = process_frame(
@@ -276,4 +276,7 @@ def process_image(source_path : str, target_path : str, output_path : str) -> No
 		'reference_faces': reference_faces,
 		'target_vision_frame': target_vision_frame
 	})
+	if result_frame is None:
+		return False
 	write_image(output_path, result_frame)
+	return True

@@ -343,7 +343,7 @@ def process_frames(source_paths : List[str], queue_payloads : List[QueuePayload]
 		update_progress()
 
 
-def process_image(source_paths : List[str], target_path : str, output_path : str) -> None:
+def process_image(source_paths : List[str], target_path : str, output_path : str) -> bool:
 	reference_faces = get_reference_faces() if 'reference' in facefusion.globals.face_selector_mode else None
 	source_frames = read_static_images(source_paths)
 	source_face = get_average_face(source_frames)
@@ -354,4 +354,7 @@ def process_image(source_paths : List[str], target_path : str, output_path : str
 		'source_face': source_face,
 		'target_vision_frame': target_vision_frame
 	})
+	if result_frame is None:
+		return False
 	write_image(output_path, result_frame)
+	return True
