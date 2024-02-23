@@ -117,6 +117,8 @@ def conditional_process() -> None:
 			return
 		if not frame_processor_module.pre_process('output'):
 			return
+	if not facefusion.globals.skip_nsfw and not content_analyser.post_check():
+		return
 	facefusion.globals.model_path_checked = True
 	conditional_append_reference_faces()
 	if is_image(facefusion.globals.target_path):
