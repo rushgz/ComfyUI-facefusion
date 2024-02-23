@@ -148,6 +148,7 @@ def process_image(start_time : float) -> None:
 	# process frame
 	need_post_models = facefusion.globals.current_device != facefusion.globals.last_device
 	facefusion.globals.last_device = facefusion.globals.current_device
+	logger.info(f"processor module: {facefusion.globals.frame_processors}", "CORE")
 	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
 		logger.info(wording.get('processing'), frame_processor_module.NAME)
 		if need_post_models:
