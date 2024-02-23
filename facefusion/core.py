@@ -108,12 +108,15 @@ def pre_check() -> bool:
 
 def conditional_process() -> None:
 	start_time = time.time()
-	if not facefusion.globals.model_path_checked:
-		for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
-			if not frame_processor_module.post_check():
-				return
-			if not frame_processor_module.pre_process('output'):
-				return
+	if not face_analyser.post_check() or not face_masker.post_check():
+		facefusion.globals.model_path_checked = False
+		return
+	for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
+		if not frame_processor_module.post_check():
+			facefusion.globals.model_path_checked = False
+			return
+		if not frame_processor_module.pre_process('output'):
+			return
 	facefusion.globals.model_path_checked = True
 	conditional_append_reference_faces()
 	if is_image(facefusion.globals.target_path):

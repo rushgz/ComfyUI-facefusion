@@ -3,14 +3,16 @@ from cv2.typing import Size
 from functools import lru_cache
 import threading
 import cv2
+import os
 import numpy
 import onnxruntime
 
 import facefusion.globals
+from facefusion import wording, logger
 from facefusion.typing import FaceLandmark68, VisionFrame, Mask, Padding, FaceMaskRegion, ModelSet
 from facefusion.execution_helper import apply_execution_provider_options
-from facefusion.filesystem import resolve_relative_path
-from facefusion.download import conditional_download
+from facefusion.filesystem import resolve_relative_path, is_file
+from facefusion.download import conditional_download, is_download_done
 
 FACE_OCCLUDER = None
 FACE_PARSER = None
@@ -84,6 +86,31 @@ def pre_check() -> bool:
 			MODELS.get('face_parser').get('url'),
 		]
 		conditional_download(download_directory_path, model_urls)
+	return True
+
+
+def check_model_download(url, path) -> bool:
+	model_url = url
+	model_path = path
+	if not facefusion.globals.skip_download and not is_download_done(model_url, model_path):
+		logger.error(wording.get('model_download_not_done') + wording.get('exclamation_mark'), __name__.upper())
+		os.remove(model_path)
+		return False
+	elif not is_file(model_path):
+		logger.error(wording.get('model_file_not_present') + wording.get('exclamation_mark'), __name__.upper())
+		return False
+	return True
+
+
+def post_check() -> bool:
+	if not check_model_download(
+		MODELS.get('face_occluder').get('url'),
+		MODELS.get('face_occluder').get('path')):
+		return False
+	if not check_model_download(
+		MODELS.get('face_parser').get('url'),
+		MODELS.get('face_parser').get('path')):
+		return False
 	return True
 
 

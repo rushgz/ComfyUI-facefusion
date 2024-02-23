@@ -1,16 +1,18 @@
 from typing import Any, Optional, List, Tuple
 import threading
 import cv2
+import os
 import numpy
 import onnxruntime
 
 import facefusion.globals
+from facefusion import wording, logger
 from facefusion.common_helper import get_first
 from facefusion.face_helper import warp_face_by_face_landmark_5, warp_face_by_translation, create_static_anchors, distance_to_face_landmark_5, distance_to_bounding_box, convert_face_landmark_68_to_5, apply_nms, categorize_age, categorize_gender
 from facefusion.face_store import get_static_faces, set_static_faces
 from facefusion.execution_helper import apply_execution_provider_options
-from facefusion.download import conditional_download
-from facefusion.filesystem import resolve_relative_path
+from facefusion.download import conditional_download, is_download_done
+from facefusion.filesystem import resolve_relative_path, is_file
 from facefusion.typing import VisionFrame, Face, FaceSet, FaceAnalyserOrder, FaceAnalyserAge, FaceAnalyserGender, ModelSet, BoundingBox, FaceLandmarkSet, FaceLandmark5, FaceLandmark68, Score, Embedding
 from facefusion.vision import resize_frame_resolution, unpack_resolution
 
@@ -120,6 +122,66 @@ def pre_check() -> bool:
 			MODELS.get('gender_age').get('url'),
 		]
 		conditional_download(download_directory_path, model_urls)
+	return True
+
+
+def check_model_download(url, path) -> bool:
+	model_url = url
+	model_path = path
+	if not facefusion.globals.skip_download and not is_download_done(model_url, model_path):
+		logger.error(wording.get('model_download_not_done') + wording.get('exclamation_mark'), __name__.upper())
+		os.remove(model_path)
+		return False
+	elif not is_file(model_path):
+		logger.error(wording.get('model_file_not_present') + wording.get('exclamation_mark'), __name__.upper())
+		return False
+	return True
+
+
+def post_check() -> bool:
+	if facefusion.globals.face_detector_model == 'retinaface':
+		if not check_model_download(
+			MODELS.get('face_detector_retinaface').get('url'),
+			MODELS.get('face_detector_retinaface').get('path')):
+			return False
+	if facefusion.globals.face_detector_model == 'yoloface':
+		if not check_model_download(
+			MODELS.get('face_detector_yoloface').get('url'),
+			MODELS.get('face_detector_yoloface').get('path')):
+			return False
+	if facefusion.globals.face_detector_model == 'yunet':
+		if not check_model_download(
+			MODELS.get('face_detector_yunet').get('url'),
+			MODELS.get('face_detector_yunet').get('path')):
+			return False
+	if facefusion.globals.face_recognizer_model == 'arcface_blendswap':
+		if not check_model_download(
+			MODELS.get('face_recognizer_arcface_blendswap').get('url'),
+			MODELS.get('face_recognizer_arcface_blendswap').get('path')):
+			return False
+	if facefusion.globals.face_recognizer_model == 'arcface_inswapper':
+		if not check_model_download(
+			MODELS.get('face_recognizer_arcface_inswapper').get('url'),
+			MODELS.get('face_recognizer_arcface_inswapper').get('path')):
+			return False
+	if facefusion.globals.face_recognizer_model == 'arcface_simswap':
+		if not check_model_download(
+			MODELS.get('face_recognizer_arcface_simswap').get('url'),
+			MODELS.get('face_recognizer_arcface_simswap').get('path')):
+			return False
+	if facefusion.globals.face_recognizer_model == 'arcface_uniface':
+		if not check_model_download(
+			MODELS.get('face_recognizer_arcface_uniface').get('url'),
+			MODELS.get('face_recognizer_arcface_uniface').get('path')):
+			return False
+	if not check_model_download(
+		MODELS.get('face_landmarker').get('url'),
+		MODELS.get('face_landmarker').get('path')):
+		return False
+	if not check_model_download(
+		MODELS.get('gender_age').get('url'),
+		MODELS.get('gender_age').get('path')):
+		return False
 	return True
 
 
