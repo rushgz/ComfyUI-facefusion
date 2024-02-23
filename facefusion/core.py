@@ -110,10 +110,8 @@ def conditional_process() -> None:
 	start_time = time.time()
 	if not facefusion.globals.model_path_checked:
 		for frame_processor_module in get_frame_processors_modules(facefusion.globals.frame_processors):
-			while not frame_processor_module.post_check():
-				logger.disable()
-				sleep(0.5)
-			logger.enable()
+			if not frame_processor_module.post_check():
+				return
 			if not frame_processor_module.pre_process('output'):
 				return
 	facefusion.globals.model_path_checked = True

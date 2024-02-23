@@ -1,3 +1,4 @@
+import os
 from typing import Any, List, Literal, Optional
 from argparse import ArgumentParser
 import threading
@@ -177,6 +178,7 @@ def post_check() -> bool:
 	model_path = get_options('model').get('path')
 	if not facefusion.globals.skip_download and not is_download_done(model_url, model_path):
 		logger.error(wording.get('model_download_not_done') + wording.get('exclamation_mark'), NAME)
+		os.remove(model_path)
 		return False
 	elif not is_file(model_path):
 		logger.error(wording.get('model_file_not_present') + wording.get('exclamation_mark'), NAME)
