@@ -25,7 +25,7 @@ class ColoredFormatter(logging.Formatter):
 		return super().format(colored_record)
 
 
-def init(log_level: str) -> None:
+def init(log_level: int) -> None:
 	logger = get_package_logger()
 	logger.propagate = False
 
@@ -67,4 +67,4 @@ def disable() -> None:
 	get_package_logger().disabled = True
 
 
-init('info')
+init(logging.INFO)
