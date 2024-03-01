@@ -7,6 +7,7 @@ from PIL import Image
 
 from facefusionlib import swapper
 from facefusionlib.swapper import DeviceProvider
+import scripts.facefusion_logging as logger
 
 
 def get_images_from_list(imgs: Union[List, None]):
@@ -81,5 +82,8 @@ def swap_face(
 	tmp_paths.append(source_path)
 	tmp_paths.append(target_path)
 	for tmp in tmp_paths:
-		os.remove(tmp)
+		try:
+			os.remove(tmp)
+		except Exception as e:
+			logger.debug(f"delete tmp file error: {e}", "FaceFusion")
 	return result_image
