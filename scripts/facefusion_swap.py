@@ -7,7 +7,7 @@ from modules.processing import (
 	StableDiffusionProcessing,
 )
 
-from scripts.facefusion_logging import logger
+import scripts.facefusion_logging as logger
 from scripts.fusion_swapper import swap_face
 from scripts.facefusion_utils import get_timestamp
 

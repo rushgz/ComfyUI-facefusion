@@ -5,7 +5,8 @@ from typing import Union, List
 
 from PIL import Image
 
-from facefusion.core import run
+from facefusionlib import swapper
+from facefusionlib.swapper import DeviceProvider
 
 
 def get_images_from_list(imgs: Union[List, None]):
@@ -54,24 +55,31 @@ def swap_face(
 	source_img.save(source_path)
 	target_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 	target_img.save(target_path)
-	output_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 
 	# call FaceFusion
 	source_path_list, tmp_paths = get_images_from_list(source_imgs)
 	paths = [source_path, *source_path_list]
-	result = run(
-		source_path=paths, target_path=target_path, output_path=output_path,
-		provider=provider, detector_score=detector_score, mask_blur=mask_blur, skip_nsfw=skip_nsfw
+	if provider == 'cuda':
+		provider = DeviceProvider.GPU
+	else:
+		provider = DeviceProvider.CPU
+	result = swapper.swap_face(
+		source_paths=paths,
+		target_path=target_path,
+		provider=provider,
+		detector_score=detector_score,
+		mask_blur=mask_blur,
+		skip_nsfw=skip_nsfw
 	)
 	if result:
 		result_image = Image.open(result)
+		tmp_paths.append(result)
 	else:
 		result_image = target_img
 
 	# clear temp files
 	tmp_paths.append(source_path)
 	tmp_paths.append(target_path)
-	tmp_paths.append(output_path)
 	for tmp in tmp_paths:
 		os.remove(tmp)
 	return result_image
