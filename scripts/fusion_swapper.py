@@ -40,6 +40,7 @@ def swap_face(
 	provider: str,
 	detector_score: float,
 	mask_blur: float,
+	landmarker_score: float,
 	skip_nsfw: bool = True,
 	source_imgs: Union[List, None] = None
 ) -> Image.Image:
@@ -70,7 +71,8 @@ def swap_face(
 		provider=provider,
 		detector_score=detector_score,
 		mask_blur=mask_blur,
-		skip_nsfw=skip_nsfw
+		skip_nsfw=skip_nsfw,
+		landmarker_score=landmarker_score
 	)
 	if result:
 		result_image = Image.open(result)

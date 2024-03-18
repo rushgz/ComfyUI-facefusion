@@ -49,12 +49,20 @@ class FaceFusionScript(scripts.Script):
 					minimum=0,
 					maximum=1
 				)
+				landmarker_score = gr.Slider(
+					label="Face Landmarker Score",
+					value=0.5,
+					step=0.05,
+					minimum=0,
+					maximum=1
+				)
 		return [
 			img,
 			enable,
 			device,
 			face_detector_score,
 			mask_blur,
+			landmarker_score,
 			imgs,
 			skip_nsfw
 		]
@@ -67,6 +75,7 @@ class FaceFusionScript(scripts.Script):
 		device,
 		face_detector_score,
 		mask_blur,
+		landmarker_score,
 		imgs,
 		skip_nsfw
 	):
@@ -75,6 +84,7 @@ class FaceFusionScript(scripts.Script):
 		self.device = device
 		self.face_detector_score = face_detector_score
 		self.mask_blur = mask_blur
+		self.landmarker_score = landmarker_score
 		self.source_imgs = imgs
 		self.skip_nsfw = skip_nsfw
 		if self.enable:
@@ -97,6 +107,7 @@ class FaceFusionScript(scripts.Script):
 					self.device,
 					self.face_detector_score,
 					self.mask_blur,
+					self.landmarker_score,
 					self.skip_nsfw,
 					self.source_imgs
 				)
