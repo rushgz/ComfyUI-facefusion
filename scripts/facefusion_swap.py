@@ -27,7 +27,8 @@ class FaceFusionScript(scripts.Script):
 	def ui(self, is_img2img):
 		with gr.Accordion(f"FaceFusion", open=False):
 			with gr.Column():
-				gr.Markdown(f"v{ff_metadata.get('version')}")
+				with gr.Row():
+					gr.Markdown(value=f"v{ff_metadata.get('version')}")
 				with gr.Row():
 					img = gr.Image(type="pil", label="Single Source Image")
 					imgs = gr.Files(label="Multiple Source Images", file_types=["image"])
