@@ -2,7 +2,7 @@
 
 [FaceFusion](https://github.com/facefusion/facefusion) is a very nice face swapper and enhancer.
 
-This repo makes it an extension of [AUTOMATIC1111 Webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui/).
+This repo makes it an extension of [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui/) or [Forge](https://github.com/lllyasviel/stable-diffusion-webui-forge) Webui.
 
 ![Preview](.github/preview.png)
 
@@ -30,7 +30,9 @@ alwayson_scripts = {
 			# Batch Sources Images
 			[get_base64_image('./t2.png'), get_base64_image('./t3.png')],
 			# Skip check nsfw
-			True
+			True,
+			# Landmarker Score
+			0.5
 		]
 	}
 }

@@ -10,6 +10,11 @@ from modules.processing import (
 import scripts.facefusion_logging as logger
 from scripts.fusion_swapper import swap_face
 from scripts.facefusion_utils import get_timestamp
+import facefusion.metadata as ff_metadata
+
+print(
+	f"[-] FaceFusion initialized. version: {ff_metadata.get('version')}"
+)
 
 
 class FaceFusionScript(scripts.Script):
@@ -22,6 +27,7 @@ class FaceFusionScript(scripts.Script):
 	def ui(self, is_img2img):
 		with gr.Accordion(f"FaceFusion", open=False):
 			with gr.Column():
+				gr.Markdown(f"v{ff_metadata.get('version')}")
 				with gr.Row():
 					img = gr.Image(type="pil", label="Single Source Image")
 					imgs = gr.Files(label="Multiple Source Images", file_types=["image"])
@@ -62,9 +68,9 @@ class FaceFusionScript(scripts.Script):
 			device,
 			face_detector_score,
 			mask_blur,
-			landmarker_score,
 			imgs,
-			skip_nsfw
+			skip_nsfw,
+			landmarker_score
 		]
 
 	def process(
@@ -75,18 +81,18 @@ class FaceFusionScript(scripts.Script):
 		device,
 		face_detector_score,
 		mask_blur,
-		landmarker_score,
 		imgs,
-		skip_nsfw
+		skip_nsfw,
+		landmarker_score
 	):
 		self.source = img
 		self.enable = enable
 		self.device = device
 		self.face_detector_score = face_detector_score
 		self.mask_blur = mask_blur
-		self.landmarker_score = landmarker_score
 		self.source_imgs = imgs
 		self.skip_nsfw = skip_nsfw
+		self.landmarker_score = landmarker_score
 		if self.enable:
 			if self.source is None:
 				logger.error(f"Please provide a source face")
@@ -101,13 +107,16 @@ class FaceFusionScript(scripts.Script):
 				st = get_timestamp()
 				logger.info("FaceFusion enabled, start process")
 				image: Image.Image = script_pp.image
+				landmarker_score = 0.5
+				if self.landmarker_score:
+					landmarker_score = self.landmarker_score
 				result: Image.Image = swap_face(
 					self.source,
 					image,
 					self.device,
 					self.face_detector_score,
 					self.mask_blur,
-					self.landmarker_score,
+					landmarker_score,
 					self.skip_nsfw,
 					self.source_imgs
 				)

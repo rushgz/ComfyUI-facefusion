@@ -1,1 +1,1 @@
-facefusionlib[gpu]==1.1.0
+facefusionlib[gpu]==1.1.1
