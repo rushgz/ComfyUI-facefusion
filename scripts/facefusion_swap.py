@@ -97,6 +97,12 @@ class FaceFusionScript(scripts.Script):
         if self.enable:
             if self.source is None:
                 logger.error(f"Please provide a source face")
+            else:
+                for i in range(len(p.init_images)):
+                    image = p.init_images[i]
+                    args = scripts.PostprocessImageArgs(image)
+                    self.postprocess_image(p, args)
+                    p.init_images[i] = args.image
 
     def postprocess_batch(self, *args, **kwargs):
         if self.enable:

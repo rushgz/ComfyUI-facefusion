@@ -1,1 +1,5 @@
 facefusionlib[gpu]==1.1.2
+Pillow
+numpy
+torch
+gradio
