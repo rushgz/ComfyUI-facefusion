@@ -12,7 +12,9 @@ class FaceFusion:
             "required": {
                 "image": ("IMAGE",),
                 "single_source_image": ("IMAGE",),  # Single source image
-                "enable": ("BOOLEAN", {"default": False}),  # Enable processing
+                "enable": ("BOOLEAN", {"default": True}),  # Enable processing
+                "enable_swapper": ("BOOLEAN", {"default": True}),  # Enable swap face
+                "enable_face_restore": ("BOOLEAN", {"default": True}),  # Enable face restore
                 "skip_nsfw": ("BOOLEAN", {"default": True}),  # Skip NSFW check
                 "device": (["cpu", "cuda"], {"default": "cpu"}),  # Execution provider
                 "face_detector_score": ("FLOAT", {"default": 0.65, "min": 0, "max": 1, "step": 0.02}),
@@ -27,7 +29,7 @@ class FaceFusion:
     FUNCTION = "execute"
     CATEGORY = "FaceFusion"
 
-    def execute(self, image, single_source_image, enable, device, face_detector_score, mask_blur, skip_nsfw, landmarker_score):
+    def execute(self, image, single_source_image, enable, device, face_detector_score, mask_blur, skip_nsfw, landmarker_score, enable_swapper, enable_face_restore):
         pil_images = batch_tensor_to_pil(image)
         source = tensor_to_pil(single_source_image)
         script = FaceFusionScript()
@@ -39,7 +41,9 @@ class FaceFusion:
                        face_detector_score=face_detector_score,
                        mask_blur=mask_blur,
                        imgs=None, skip_nsfw=skip_nsfw,
-                       landmarker_score=landmarker_score)
+                       landmarker_score=landmarker_score,
+                       enable_swapper=enable_swapper,
+                       enable_face_restore=enable_face_restore)
         result = batched_pil_to_tensor(p.init_images)
         return (result,)
 

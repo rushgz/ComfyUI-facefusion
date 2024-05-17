@@ -34,6 +34,8 @@ class FaceFusionScript(scripts.Script):
                     imgs = gr.Files(label="Multiple Source Images", file_types=["image"])
                 with gr.Row():
                     enable = gr.Checkbox(False, placeholder="enable", label="Enable")
+                    enable_swapper = gr.Checkbox(True, placeholder="enable", label="Enable Swapper")
+                    enable_face_restore = gr.Checkbox(True, placeholder="enable", label="Enable Face Restore")
                     skip_nsfw = gr.Checkbox(True, placeholder="skip_nsfw", label="Skip Check NSFW")
                 device = gr.Radio(
                     label="Execution Provider",
@@ -71,7 +73,9 @@ class FaceFusionScript(scripts.Script):
             mask_blur,
             imgs,
             skip_nsfw,
-            landmarker_score
+            landmarker_score,
+            enable_swapper,
+            enable_face_restore
         ]
 
     def process(
@@ -84,7 +88,9 @@ class FaceFusionScript(scripts.Script):
         mask_blur,
         imgs,
         skip_nsfw,
-        landmarker_score
+        landmarker_score,
+        enable_swapper,
+        enable_face_restore
     ):
         self.source = img
         self.enable = enable
@@ -94,6 +100,8 @@ class FaceFusionScript(scripts.Script):
         self.source_imgs = imgs
         self.skip_nsfw = skip_nsfw
         self.landmarker_score = landmarker_score
+        self.enable_swapper = enable_swapper
+        self.enable_face_restore = enable_face_restore
         if self.enable:
             if self.source is None:
                 logger.error(f"Please provide a source face")
@@ -125,7 +133,9 @@ class FaceFusionScript(scripts.Script):
                     self.mask_blur,
                     landmarker_score,
                     self.skip_nsfw,
-                    self.source_imgs
+                    self.source_imgs,
+                    self.enable_swapper,
+                    self.enable_face_restore
                 )
                 pp = scripts_postprocessing.PostprocessedImage(result)
                 pp.info = {}

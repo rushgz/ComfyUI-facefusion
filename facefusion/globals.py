@@ -55,3 +55,7 @@ skip_audio : Optional[bool] = None
 frame_processors : List[str] = []
 # uis
 ui_layouts : List[str] = []
+
+current_device: str = 'cpu'
+last_device: str = 'cpu'
+model_path_checked = False

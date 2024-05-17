@@ -42,7 +42,9 @@ def swap_face(
     mask_blur: float,
     landmarker_score: float,
     skip_nsfw: bool = True,
-    source_imgs: Union[List, None] = None
+    source_imgs: Union[List, None] = None,
+    enable_swapper: bool = True,
+    enable_face_restore: bool = True,
 ) -> Image.Image:
     if isinstance(source_img, str):  # source_img is a base64 string
         import base64, io
@@ -72,7 +74,9 @@ def swap_face(
         detector_score=detector_score,
         mask_blur=mask_blur,
         skip_nsfw=skip_nsfw,
-        landmarker_score=landmarker_score
+        landmarker_score=landmarker_score,
+        enable_swapper=enable_swapper,
+        enable_face_restore=enable_face_restore,
     )
     if result:
         result_image = Image.open(result)
